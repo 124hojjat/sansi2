@@ -31,6 +31,7 @@ class SecurityConfigMe {
             "/api/User/loginStep2",
             "/api/tablighat/getAll",
             "/api/salons/getAllSalonOrStakhr",
+            "/api/salons/getSalonById",
             "/api/slotTime/getByDateSalons",
             "/api/payment/callback",
             "/api/slotTime/generateNext7Days",
