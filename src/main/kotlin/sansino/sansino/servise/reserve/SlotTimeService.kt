@@ -57,6 +57,8 @@ class SlotTimeService(private val kavenegar: KavenegarService) {
 
         for (salon in salons) {
             val config = salon.dailySlotConfig
+            // todo : توی محیط واقعی باید پاک بشه
+            salonsRepository.deleteAll()
             if (config == null) {
                 println("⚠️ تنظیمات تایم سالن ${salon.name} پر نشده، رد شد.")
                 if (salon.owner?.numberPhone != null){
