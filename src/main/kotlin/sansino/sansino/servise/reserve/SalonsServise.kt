@@ -62,7 +62,7 @@ class SalonsServise {
     }
 
     //    ادیت سالن توسط ادمین و سالن دار
-    fun update(token: String, salonsId: Long, salons: Salons): Salons {
+   fun update(token: String, salonsId: Long, salons: Salons, activitiesSalonsAndUsers: MutableList<ActivitiesSalonsAndUsers>? = null): Salons {
         val userId = jwt.getIdFromToken(token) ?: throw ExceptionMe("کاربر ناشناخته")
         val user = userRepository.findById(userId)
             .orElseThrow { ExceptionMe("کاربر یافت نشد") }
@@ -76,10 +76,8 @@ class SalonsServise {
         if (user.role != Role.ADMIN && existingSalon.owner?.id != user.id) {
             throw ExceptionMe("شما اجازه آپدیت این سالن را ندارید")
         }
-        if (user.role != Role.HOLDER || existingSalon.owner?.id != user.id) {
-            throw ExceptionMe("شما اجازه آپدیت این سالن را ندارید")
-        }
 
+        // آپدیت فیلدهای ساده
         if (salons.name.isNotEmpty()) existingSalon.name = salons.name
         if (salons.password.isNotEmpty()) existingSalon.password = salons.password
         if (salons.address.isNotEmpty()) existingSalon.address = salons.address
@@ -87,8 +85,16 @@ class SalonsServise {
         if (salons.numberPhone.isNotEmpty()) existingSalon.numberPhone = salons.numberPhone
         existingSalon.betweenWomanMan = salons.betweenWomanMan
 
+        // آپدیت فعالیت‌ها (اگر داده جدید آمده باشد)
+        activitiesSalonsAndUsers?.let { newActivities ->
+            // ارتباط دوطرفه را ست می‌کنیم
+            newActivities.forEach { it.salon = existingSalon }
+            existingSalon.activitis = newActivities
+        }
+
         return salonsRepository.save(existingSalon)
     }
+
 
 
     //    گرفتن سالن بر اساس شماره
